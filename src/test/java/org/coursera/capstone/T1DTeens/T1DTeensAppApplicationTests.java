@@ -1,6 +1,7 @@
 package org.coursera.capstone.T1DTeens;
 
 import org.coursera.capstone.T1DTeens.entities.User;
+import org.coursera.capstone.T1DTeens.repositories.RelationRepository;
 import org.coursera.capstone.T1DTeens.repositories.UserRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,8 +20,8 @@ public class T1DTeensAppApplicationTests {
 
 	@Autowired
 	UserRepository userRepo;
-/*	@Autowired
-	RelationRepository relRepo;*/
+	@Autowired
+	RelationRepository relRepo;
 
 	@Test
 	@Transactional
@@ -56,14 +57,20 @@ public class T1DTeensAppApplicationTests {
 		userRepo.flush();
 
 		user1.getSubscribedToList().add(user2);
-		user1.getSubscribedToList().add(user3);
-		userRepo.save(user1);
-		user2.getSubscribedToList().add(user3);
-		userRepo.save(user2);
-		user3.getSubscribedToList().add(user1);
-		userRepo.save(user3);
+		user2.getSubscribedByList().add(user1);
+		user1 = userRepo.save(user1);
+		userRepo.delete(user1);
 
-		userRepo.flush();
+/*		user1.unsubscribeFrom(user3);
+		userRepo.saveAndFlush(user1);*/
+
+		for (User user : user1.getSubscribedToList()){
+			user.getSubscribedByList().remove(user1);
+			userRepo.saveAndFlush(user);
+		}
+
+		user1.getSubscribedToList().clear();
+		userRepo.delete(user1);
 
 		System.out.println(user1.getFirstName() + " subscribed to :");
 		for (User tempP : userRepo.findOne(user1.getId()).getSubscribedToList() )
@@ -86,6 +93,8 @@ public class T1DTeensAppApplicationTests {
 
 		user1.getSubscribedToList().remove(user3);
 
+		userRepo.saveAndFlush(user1);
+
 		User user = user1;
 		user1.getSubscribedToList().clear();
 		user1.getSubscribedByList().clear();
@@ -94,7 +103,7 @@ public class T1DTeensAppApplicationTests {
 
 		user1 = user;
 
-		userRepo.saveAndFlush(user1);
+
 
 
 	}

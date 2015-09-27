@@ -3,19 +3,8 @@ package org.coursera.capstone.T1DTeens.entities;
 import javax.persistence.*;
 
 @Entity
-@Table(name="USERS_USERS")
+@Table(name="RELATIONS")
 public class Relation {
-
-/*    @EmbeddedId
-    private Key key;
-
-    public Key getKey() {
-        return key;
-    }
-
-    public void setKey(Key key) {
-        this.key = key;
-    }*/
 
     @Id
     @Column(name="REL_ID")
